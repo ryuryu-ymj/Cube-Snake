@@ -28,7 +28,6 @@ class Game : ApplicationAdapter() {
 
     private val blocks = mutableListOf<Block>()
     private val snake = Snake()
-    private lateinit var actorList: MutableList<MutableList<MyActor?>>
 
     override fun create() {
         //batch.projectionMatrix = stage.camera.combined
@@ -115,27 +114,16 @@ class Game : ApplicationAdapter() {
     private fun readStage(stageNum: Int) {
         try {
             val file = Gdx.files.internal("stage${"%02d".format(stageNum)}.txt")
-            actorList = MutableList(file.reader().readLines().maxBy {
-                it.split(",").size
-            }?.split(",")?.size ?: 0) {
-                MutableList<MyActor?>(file.reader().readLines().size) { null }
-            }
             for ((iy, line) in file.reader().readLines().asReversed().withIndex()) {
-                actorList.add(mutableListOf())
                 for ((ix, cell) in line.split(",").withIndex()) {
                     when (cell) {
                         "b" -> Block(ix, iy).let {
                             blocks.add(it)
                             stage.addActor(it)
-                            actorList[ix][iy] = it
                         }
                         "p" -> snake.let {
                             stage.addActor(it)
                             it.create(ix, iy, 8)
-                            it.bodies.forEach { actorList[it.ix][it.iy] = it }
-                        }
-                        else -> {
-                            actorList[ix][iy] = null
                         }
                     }
                 }

@@ -16,7 +16,6 @@ class SnakeBody(ix: Int, iy: Int) : MyActor(ix, iy) {
 
         width = texture.width.toFloat()
         height = texture.height.toFloat()
-        setPosition((ix * 100).toFloat(), (iy * 100).toFloat())
     }
 
     fun dispose() {
@@ -26,8 +25,6 @@ class SnakeBody(ix: Int, iy: Int) : MyActor(ix, iy) {
 
     override fun act(delta: Float) {
         super.act(delta)
-        x = ix.toFloat() * 100
-        y = iy.toFloat() * 100
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {

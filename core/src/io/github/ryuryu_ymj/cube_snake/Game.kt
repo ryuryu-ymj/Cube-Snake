@@ -77,7 +77,8 @@ class Game : ApplicationAdapter() {
 
         if (!snake.bodies.any { body ->
                     blocks.any { it.iy == body.iy - 1 && it.ix == body.ix }
-                }) snake.drop()
+                }) snake.fall()
+
     }
 
     override fun resize(width: Int, height: Int) {
@@ -123,7 +124,7 @@ class Game : ApplicationAdapter() {
                         }
                         "p" -> snake.let {
                             stage.addActor(it)
-                            it.create(ix, iy, 8)
+                            it.create(ix, iy, 8, blocks)
                         }
                     }
                 }

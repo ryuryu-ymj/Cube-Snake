@@ -13,7 +13,6 @@ class Block(ix: Int, iy: Int) : MyActor(ix, iy) {
 
         width = texture.width.toFloat()
         height = texture.height.toFloat()
-        setPosition(ix.toFloat() * 100, iy.toFloat() * 100)
     }
 
     fun dispose() {

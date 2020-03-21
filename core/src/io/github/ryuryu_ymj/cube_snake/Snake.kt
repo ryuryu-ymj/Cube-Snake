@@ -2,16 +2,15 @@ package io.github.ryuryu_ymj.cube_snake
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.scenes.scene2d.Actor
 
 class Snake : MyActor() {
     val bodies = mutableListOf<SnakeBody>()
     private var cnt = 0
-    private var canGoRight = true
-    private var canGoUp = true
-    private var canGoLeft = true
-    private var canGoDown = true
+    private val canGo = mutableMapOf(Direction.RIGHT to true, Direction.LEFT to true,
+            Direction.UP to true, Direction.DOWN to true)
     private lateinit var blocks: MutableList<Block>
+    var isAlive = true
+        private set
 
     fun create(ix: Int, iy: Int, bodyCnt: Int, blocks: MutableList<Block>) {
         for (i in 0 until bodyCnt) {
@@ -25,20 +24,17 @@ class Snake : MyActor() {
 
     override fun act(delta: Float) {
         super.act(delta)
-        /*if (bodies[0].direction == Direction.RIGHT) canGoLeft = false
-        if (bodies[0].direction == Direction.LEFT) canGoRight = false
-        if (bodies[0].direction == Direction.UP) canGoDown = false
-        if (bodies[0].direction == Direction.DOWN) canGoUp = false*/
         val actorList = bodies + blocks
-        canGoRight = !actorList.any { it.ix == ix + 1 && it.iy == iy }
-        canGoLeft = !actorList.any { it.ix == ix - 1 && it.iy == iy }
-        canGoUp = !actorList.any { it.ix == ix && it.iy == iy + 1 }
-        canGoDown = !actorList.any { it.ix == ix && it.iy == iy - 1 }
+        canGo[Direction.RIGHT] = !actorList.any { it.ix == ix + 1 && it.iy == iy }
+        canGo[Direction.LEFT] = !actorList.any { it.ix == ix - 1 && it.iy == iy }
+        canGo[Direction.UP] = !actorList.any { it.ix == ix && it.iy == iy + 1 }
+        canGo[Direction.DOWN] = !actorList.any { it.ix == ix && it.iy == iy - 1 }
+        if (canGo.all { !it.value }) die()
         if (cnt <= 0) {
             // 入力による移動
             when {
                 (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
-                        && canGoLeft -> {
+                        && canGo[Direction.LEFT] ?: true -> {
                     chaseHead()
                     bodies[0].run {
                         ix--
@@ -46,7 +42,7 @@ class Snake : MyActor() {
                     }
                 }
                 (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
-                        && canGoRight -> {
+                        && canGo[Direction.RIGHT] ?: true -> {
                     chaseHead()
                     bodies[0].run {
                         ix++
@@ -54,7 +50,7 @@ class Snake : MyActor() {
                     }
                 }
                 (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
-                        && canGoDown -> {
+                        && canGo[Direction.DOWN] ?: true -> {
                     chaseHead()
                     bodies[0].run {
                         iy--
@@ -62,7 +58,7 @@ class Snake : MyActor() {
                     }
                 }
                 (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
-                        && canGoUp -> {
+                        && canGo[Direction.UP] ?: true -> {
                     chaseHead()
                     bodies[0].run {
                         iy++
@@ -89,5 +85,10 @@ class Snake : MyActor() {
         bodies.forEach {
             it.iy--
         }
+    }
+
+    fun die() {
+        isAlive = false
+        println("player died")
     }
 }

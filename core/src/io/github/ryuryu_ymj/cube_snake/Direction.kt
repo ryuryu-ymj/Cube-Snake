@@ -1,7 +1,7 @@
 package io.github.ryuryu_ymj.cube_snake
 
-enum class Direction(val index: Int) {
-    LEFT(0), RIGHT(1), DOWN(2), UP(3);
+enum class Direction(val index: Int, val degree: Float) {
+    LEFT(0, 180f), RIGHT(1, 0f), DOWN(2, 270f), UP(3, 90f);
 
     /** index */
     operator fun invoke() = index

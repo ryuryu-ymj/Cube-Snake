@@ -4,15 +4,15 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 
 class Snake : MyActor() {
-    val bodies = mutableListOf<SnakeBody>()
+    private val bodies = mutableListOf<SnakeBody>()
     private var cnt = 0
     private lateinit var blocks: MutableList<Block>
     var isAlive = true
         private set
 
-    fun create(ix: Int, iy: Int, bodyCnt: Int, blocks: MutableList<Block>) {
+    fun create(panelX: Int, panelY: Int, bodyCnt: Int, blocks: MutableList<Block>) {
         for (i in 0 until bodyCnt) {
-            SnakeBody(ix - i, iy).let {
+            SnakeBody(panelX - i, panelY).let {
                 stage.addActor(it)
                 bodies.add(it)
             }
@@ -28,10 +28,10 @@ class Snake : MyActor() {
         super.act(delta)
         val actorList = bodies + blocks
         val movable = Array(4) { true }
-        movable[Direction.RIGHT()] = !actorList.any { it.ix == ix + 1 && it.iy == iy }
-        movable[Direction.LEFT()] = !actorList.any { it.ix == ix - 1 && it.iy == iy }
-        movable[Direction.UP()] = !actorList.any { it.ix == ix && it.iy == iy + 1 }
-        movable[Direction.DOWN()] = !actorList.any { it.ix == ix && it.iy == iy - 1 }
+        movable[Direction.RIGHT()] = !actorList.any { it.panelX == panelX + 1 && it.panelY == panelY }
+        movable[Direction.LEFT()] = !actorList.any { it.panelX == panelX - 1 && it.panelY == panelY }
+        movable[Direction.UP()] = !actorList.any { it.panelX == panelX && it.panelY == panelY + 1 }
+        movable[Direction.DOWN()] = !actorList.any { it.panelX == panelX && it.panelY == panelY - 1 }
         if (movable.all { !it }) die()
         if (cnt <= 0) {
             // 入力による移動
@@ -40,7 +40,7 @@ class Snake : MyActor() {
                         && movable[Direction.LEFT()] -> {
                     chaseHead()
                     bodies[0].run {
-                        ix--
+                        panelX--
                         direction = Direction.LEFT
                     }
                 }
@@ -48,7 +48,7 @@ class Snake : MyActor() {
                         && movable[Direction.RIGHT()] -> {
                     chaseHead()
                     bodies[0].run {
-                        ix++
+                        panelX++
                         direction = Direction.RIGHT
                     }
                 }
@@ -56,7 +56,7 @@ class Snake : MyActor() {
                         && movable[Direction.DOWN()] -> {
                     chaseHead()
                     bodies[0].run {
-                        iy--
+                        panelY--
                         direction = Direction.DOWN
                     }
                 }
@@ -64,31 +64,36 @@ class Snake : MyActor() {
                         && movable[Direction.UP()] -> {
                     chaseHead()
                     bodies[0].run {
-                        iy++
+                        panelY++
                         direction = Direction.UP
                     }
                 }
             }
         }
-        ix = bodies[0].ix
-        iy = bodies[0].iy
+        panelX = bodies[0].panelX
+        panelY = bodies[0].panelY
+
+        // 落下
+        if (!bodies.any { body ->
+                    blocks.any { it.panelY == body.panelY - 1 && it.panelX == body.panelX }
+                }) fall()
         if (cnt > 0) cnt--
     }
 
     private fun chaseHead() {
         for (i in bodies.size - 1 downTo 1) {
-            bodies[i].ix = bodies[i - 1].ix
-            bodies[i].iy = bodies[i - 1].iy
+            bodies[i].panelX = bodies[i - 1].panelX
+            bodies[i].panelY = bodies[i - 1].panelY
             bodies[i].direction = bodies[i - 1].direction
         }
         cnt = 20
     }
 
-    fun fall() {
+    private fun fall() {
         bodies.forEach {
-            it.iy--
+            it.panelY--
         }
-        iy--
+        panelY--
     }
 
     fun die() {

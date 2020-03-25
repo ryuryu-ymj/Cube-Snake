@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 
 const val VIEWPORT_WIDTH = 2560f
 const val VIEWPORT_HEIGHT = 1440f
+const val PANEL_UNIT = 100
 
 class Game : ApplicationAdapter() {
     private lateinit var stage: Stage
@@ -28,6 +29,7 @@ class Game : ApplicationAdapter() {
 
     private val blocks = mutableListOf<Block>()
     private val snake = Snake()
+    private val goal = Goal()
 
     override fun create() {
         //batch.projectionMatrix = stage.camera.combined
@@ -74,11 +76,6 @@ class Game : ApplicationAdapter() {
         stage.screenToStageCoordinates(touchPoint)*/
 
         stage.act()
-
-        if (!snake.bodies.any { body ->
-                    blocks.any { it.iy == body.iy - 1 && it.ix == body.ix }
-                }) snake.fall()
-
     }
 
     override fun resize(width: Int, height: Int) {
@@ -118,15 +115,31 @@ class Game : ApplicationAdapter() {
         try {
             val file = Gdx.files.internal("stage${"%02d".format(stageNum)}.txt")
             for ((iy, line) in file.reader().readLines().asReversed().withIndex()) {
-                for ((ix, cell) in line.split(",").withIndex()) {
+                for ((ix, cell) in line.chunked(2).withIndex()) {
                     when (cell) {
-                        "b" -> Block(ix, iy).let {
+                        "b0" -> Block(ix, iy).let {
                             blocks.add(it)
                             stage.addActor(it)
                         }
-                        "p" -> snake.let {
+                        "p0" -> snake.let {
                             stage.addActor(it)
                             it.create(ix, iy, 8, blocks)
+                        }
+                        "gl" -> goal.let {
+                            it.create(ix, iy, Direction.LEFT)
+                            stage.addActor(it)
+                        }
+                        "gr" -> goal.let {
+                            it.create(ix, iy, Direction.RIGHT)
+                            stage.addActor(it)
+                        }
+                        "gd" -> goal.let {
+                            it.create(ix, iy, Direction.DOWN)
+                            stage.addActor(it)
+                        }
+                        "gu" -> goal.let {
+                            it.create(ix, iy, Direction.UP)
+                            stage.addActor(it)
                         }
                     }
                 }

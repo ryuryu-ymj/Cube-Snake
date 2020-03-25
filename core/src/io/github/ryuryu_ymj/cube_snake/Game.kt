@@ -87,6 +87,8 @@ class Game : ApplicationAdapter() {
 
     override fun dispose() {
         stage.dispose()
+        snake.dispose()
+        blocks.forEach { it.dispose() }
         batch.dispose()
         font?.dispose()
     }

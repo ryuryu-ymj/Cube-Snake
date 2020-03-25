@@ -2,7 +2,6 @@ package io.github.ryuryu_ymj.cube_snake
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.scenes.scene2d.Actor
 
 class Block(ix: Int, iy: Int) : MyActor(ix, iy) {
     private val texture = Texture("block.png")
@@ -15,8 +14,7 @@ class Block(ix: Int, iy: Int) : MyActor(ix, iy) {
         height = texture.height.toFloat()
     }
 
-    fun dispose() {
-        clear()
+    override fun dispose() {
         texture.dispose()
     }
 

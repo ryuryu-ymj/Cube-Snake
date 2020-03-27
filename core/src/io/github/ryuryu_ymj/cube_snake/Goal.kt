@@ -4,18 +4,15 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
-class Goal : MyActor() {
-    private val texture: TextureRegion by lazy { TextureRegion(Texture("goal.png")) }
-    private var direction = Direction.LEFT
+class Goal(fieldMap: FieldMap, indexX: Int, indexY: Int, direction: Direction) : MyActor(fieldMap, indexX, indexY) {
+    private val texture = TextureRegion(Texture("goal.png"))
+    private var direction = direction
 
-    fun create(panelX: Int, panelY: Int, direction: Direction) {
+    init {
         /* 拡大・縮小時も滑らかにする. */
         texture.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
         width = texture.texture.width.toFloat()
         height = texture.texture.height.toFloat()
-        this.panelX = panelX
-        this.panelY = panelY
-        this.direction = direction
     }
 
     override fun dispose() {

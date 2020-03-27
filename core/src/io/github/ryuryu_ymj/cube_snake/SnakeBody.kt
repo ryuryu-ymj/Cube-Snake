@@ -3,7 +3,7 @@ package io.github.ryuryu_ymj.cube_snake
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 
-class SnakeBody(ix: Int, iy: Int) : MyActor(ix, iy) {
+class SnakeBody(fieldMap: FieldMap, ix: Int, iy: Int) : MyActor(fieldMap, ix, iy) {
     companion object {
         private val texture = Texture("snake_body.png")
     }

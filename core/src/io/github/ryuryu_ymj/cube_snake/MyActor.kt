@@ -2,15 +2,25 @@ package io.github.ryuryu_ymj.cube_snake
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 
-abstract class MyActor(var panelX: Int = 0, var panelY: Int = 0) : Actor() {
+abstract class MyActor(protected val fieldMap: FieldMap, indexX: Int = 0, indexY: Int = 0) : Actor() {
+    var indexX = indexX
+    var indexY = indexY
     init {
-        setPosition((panelX * PANEL_UNIT).toFloat(), (panelY * PANEL_UNIT).toFloat())
+        setPosition((indexX * PANEL_UNIT).toFloat(), (indexY * PANEL_UNIT).toFloat())
     }
 
     abstract fun dispose()
 
     override fun act(delta: Float) {
         super.act(delta)
-        setPosition((panelX * PANEL_UNIT).toFloat(), (panelY * PANEL_UNIT).toFloat())
+        setPosition((indexX * PANEL_UNIT).toFloat(), (indexY * PANEL_UNIT).toFloat())
+    }
+
+    fun move(indexX: Int, indexY: Int) {
+        fieldMap.moveActor(this, indexX, indexY)
+    }
+
+    fun moveByChange(dIndexX: Int, dIndexY: Int) {
+        fieldMap.moveActorByChange(this, dIndexX, dIndexY)
     }
 }

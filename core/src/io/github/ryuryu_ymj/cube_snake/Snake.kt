@@ -2,98 +2,85 @@ package io.github.ryuryu_ymj.cube_snake
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Stage
 
-class Snake : MyActor() {
-    private val bodies = mutableListOf<SnakeBody>()
+class Snake : Actor() {
+    val bodies = mutableListOf<SnakeBody>()
+    val head
+        get() = bodies[0]
     private var cnt = 0
-    private lateinit var blocks: MutableList<Block>
     var isAlive = true
         private set
+    val movable = Array(4) { true }
 
-    fun create(panelX: Int, panelY: Int, bodyCnt: Int, blocks: MutableList<Block>) {
+    fun create(indexX: Int, indexY: Int, bodyCnt: Int, fieldMap: FieldMap, stage: Stage) {
+        stage.addActor(this)
         for (i in 0 until bodyCnt) {
-            SnakeBody(panelX - i, panelY).let {
-                stage.addActor(it)
+            SnakeBody(fieldMap, indexX - i, indexY).let {
+                fieldMap.addActor(stage, it)
                 bodies.add(it)
             }
         }
-        this.blocks = blocks
     }
 
-    override fun dispose() {
+    fun dispose() {
         bodies.forEach { it.dispose() }
     }
 
     override fun act(delta: Float) {
         super.act(delta)
-        val actorList = bodies + blocks
-        val movable = Array(4) { true }
-        movable[Direction.RIGHT()] = !actorList.any { it.panelX == panelX + 1 && it.panelY == panelY }
-        movable[Direction.LEFT()] = !actorList.any { it.panelX == panelX - 1 && it.panelY == panelY }
-        movable[Direction.UP()] = !actorList.any { it.panelX == panelX && it.panelY == panelY + 1 }
-        movable[Direction.DOWN()] = !actorList.any { it.panelX == panelX && it.panelY == panelY - 1 }
-        if (movable.all { !it }) die()
+        if (movable.all { !it }) die() // 自死
         if (cnt <= 0) {
             // 入力による移動
             when {
                 (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
                         && movable[Direction.LEFT()] -> {
-                    chaseHead()
-                    bodies[0].run {
-                        panelX--
-                        direction = Direction.LEFT
-                    }
+                    proceed(Direction.LEFT)
                 }
                 (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
                         && movable[Direction.RIGHT()] -> {
-                    chaseHead()
-                    bodies[0].run {
-                        panelX++
-                        direction = Direction.RIGHT
-                    }
+                    proceed(Direction.RIGHT)
                 }
                 (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
                         && movable[Direction.DOWN()] -> {
-                    chaseHead()
-                    bodies[0].run {
-                        panelY--
-                        direction = Direction.DOWN
-                    }
+                    proceed(Direction.DOWN)
                 }
                 (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
                         && movable[Direction.UP()] -> {
-                    chaseHead()
-                    bodies[0].run {
-                        panelY++
-                        direction = Direction.UP
-                    }
+                    proceed(Direction.UP)
                 }
             }
         }
-        panelX = bodies[0].panelX
-        panelY = bodies[0].panelY
 
-        // 落下
-        if (!bodies.any { body ->
-                    blocks.any { it.panelY == body.panelY - 1 && it.panelX == body.panelX }
-                }) fall()
         if (cnt > 0) cnt--
     }
 
-    private fun chaseHead() {
-        for (i in bodies.size - 1 downTo 1) {
-            bodies[i].panelX = bodies[i - 1].panelX
-            bodies[i].panelY = bodies[i - 1].panelY
-            bodies[i].direction = bodies[i - 1].direction
+    private fun proceed(direction: Direction) {
+        var goalX = head.indexX + when(direction) {
+            Direction.RIGHT -> 1
+            Direction.LEFT -> -1
+            else -> 0
+        }
+        var goalY = head.indexY + when(direction) {
+            Direction.UP -> 1
+            Direction.DOWN -> -1
+            else -> 0
+        }
+        bodies.forEach {
+            val indexX = it.indexX
+            val indexY = it.indexY
+            it.move(goalX, goalY)
+            goalX = indexX
+            goalY = indexY
         }
         cnt = 20
     }
 
-    private fun fall() {
+    fun fall() {
         bodies.forEach {
-            it.panelY--
+            it.moveByChange(0, -1)
         }
-        panelY--
     }
 
     fun die() {

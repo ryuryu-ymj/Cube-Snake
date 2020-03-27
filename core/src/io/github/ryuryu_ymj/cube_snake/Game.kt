@@ -27,9 +27,10 @@ class Game : ApplicationAdapter() {
     private var font: BitmapFont? = null
     private var score = 0
 
+    private var fieldMap = FieldMap()
     private val blocks = mutableListOf<Block>()
-    private val snake = Snake()
-    private val goal = Goal()
+    private lateinit var snake: Snake
+    private lateinit var goal: Goal
 
     override fun create() {
         //batch.projectionMatrix = stage.camera.combined
@@ -55,7 +56,7 @@ class Game : ApplicationAdapter() {
     }
 
     private fun draw() {
-        camera.position.set(snake.x, camera.position.y, 0f)
+        camera.position.set(snake.head.x, camera.position.y, 0f)
         camera.update()
         batch.projectionMatrix = camera.combined
 
@@ -74,6 +75,18 @@ class Game : ApplicationAdapter() {
     private fun update() {
         /*touchPoint.set(Gdx.input.x.toFloat(), Gdx.input.y.toFloat())
         stage.screenToStageCoordinates(touchPoint)*/
+        snake.run {
+            // 移動方向の制限
+            movable[Direction.LEFT()] = !fieldMap[head.indexX - 1, head.indexY].let { it is Block || it is SnakeBody }
+            movable[Direction.RIGHT()] = !fieldMap[head.indexX + 1, head.indexY].let { it is Block || it is SnakeBody }
+            movable[Direction.DOWN()] = !fieldMap[head.indexX, head.indexY - 1].let { it is Block || it is SnakeBody }
+            movable[Direction.UP()] = !fieldMap[head.indexX, head.indexY + 1].let { it is Block || it is SnakeBody }
+
+            // 落下
+            if (!bodies.any {
+                        fieldMap[it.indexX, it.indexY - 1] is Block
+                    }) fall()
+        }
 
         stage.act()
     }
@@ -114,32 +127,29 @@ class Game : ApplicationAdapter() {
     private fun readStage(stageNum: Int) {
         try {
             val file = Gdx.files.internal("stage${"%02d".format(stageNum)}.txt")
-            for ((iy, line) in file.reader().readLines().asReversed().withIndex()) {
+            val lines = file.reader().readLines().asReversed()
+            fieldMap = FieldMap(lines.map { it.length }.max() ?: 0, lines.size)
+            for ((iy, line) in lines.withIndex()) {
                 for ((ix, cell) in line.chunked(2).withIndex()) {
                     when (cell) {
-                        "b0" -> Block(ix, iy).let {
+                        "b0" -> Block(fieldMap, ix, iy).let {
                             blocks.add(it)
-                            stage.addActor(it)
+                            fieldMap.addActor(stage, it)
                         }
-                        "p0" -> snake.let {
-                            stage.addActor(it)
-                            it.create(ix, iy, 8, blocks)
+                        "p0" -> snake = Snake().also {
+                            it.create(ix, iy, 8, fieldMap, stage)
                         }
-                        "gl" -> goal.let {
-                            it.create(ix, iy, Direction.LEFT)
-                            stage.addActor(it)
+                        "gl" -> goal = Goal(fieldMap, ix, iy, Direction.LEFT).also {
+                            fieldMap.addActor(stage, it)
                         }
-                        "gr" -> goal.let {
-                            it.create(ix, iy, Direction.RIGHT)
-                            stage.addActor(it)
+                        "gr" -> goal = Goal(fieldMap, ix, iy, Direction.RIGHT).also {
+                            fieldMap.addActor(stage, it)
                         }
-                        "gd" -> goal.let {
-                            it.create(ix, iy, Direction.DOWN)
-                            stage.addActor(it)
+                        "gd" -> goal = Goal(fieldMap, ix, iy, Direction.DOWN).also {
+                            fieldMap.addActor(stage, it)
                         }
-                        "gu" -> goal.let {
-                            it.create(ix, iy, Direction.UP)
-                            stage.addActor(it)
+                        "gu" -> goal = Goal(fieldMap, ix, iy, Direction.UP).also {
+                            fieldMap.addActor(stage, it)
                         }
                     }
                 }

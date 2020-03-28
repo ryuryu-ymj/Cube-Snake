@@ -4,9 +4,18 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
-class Goal(fieldMap: FieldMap, indexX: Int, indexY: Int, direction: Direction) : MyActor(fieldMap, indexX, indexY) {
+class Goal(fieldMap: FieldMap, indexX: Int, indexY: Int, val direction: Direction) : Building(fieldMap, indexX, indexY) {
     private val texture = TextureRegion(Texture("goal.png"))
-    private var direction = direction
+    val entranceIndexXY
+        get() = indexX + when (direction) {
+            Direction.RIGHT -> 1
+            Direction.LEFT -> -1
+            else -> 0
+        } to indexY + when (direction) {
+            Direction.UP -> 1
+            Direction.DOWN -> -1
+            else -> 0
+        }
 
     init {
         /* 拡大・縮小時も滑らかにする. */

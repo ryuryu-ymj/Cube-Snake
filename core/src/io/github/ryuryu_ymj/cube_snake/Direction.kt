@@ -5,4 +5,11 @@ enum class Direction(val index: Int, val degree: Float) {
 
     /** index */
     operator fun invoke() = index
+    val reverse
+        get() = when (this) {
+            LEFT -> RIGHT
+            RIGHT -> LEFT
+            DOWN -> UP
+            UP -> DOWN
+        }
 }

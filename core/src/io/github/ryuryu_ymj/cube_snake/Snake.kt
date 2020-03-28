@@ -33,23 +33,8 @@ class Snake : Actor() {
         if (movable.all { !it }) die() // 自死
         if (cnt <= 0) {
             // 入力による移動
-            when {
-                (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
-                        && movable[Direction.LEFT()] -> {
-                    proceed(Direction.LEFT)
-                }
-                (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
-                        && movable[Direction.RIGHT()] -> {
-                    proceed(Direction.RIGHT)
-                }
-                (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
-                        && movable[Direction.DOWN()] -> {
-                    proceed(Direction.DOWN)
-                }
-                (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
-                        && movable[Direction.UP()] -> {
-                    proceed(Direction.UP)
-                }
+            input.let {
+                if (it != null && movable[it()]) proceed(it)
             }
         }
 
@@ -57,12 +42,12 @@ class Snake : Actor() {
     }
 
     private fun proceed(direction: Direction) {
-        var goalX = head.indexX + when(direction) {
+        var goalX = head.indexX + when (direction) {
             Direction.RIGHT -> 1
             Direction.LEFT -> -1
             else -> 0
         }
-        var goalY = head.indexY + when(direction) {
+        var goalY = head.indexY + when (direction) {
             Direction.UP -> 1
             Direction.DOWN -> -1
             else -> 0

@@ -3,7 +3,7 @@ package io.github.ryuryu_ymj.cube_snake
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 
-class Block(fieldMap: FieldMap, ix: Int, iy: Int) : MyActor(fieldMap, ix, iy) {
+class Block(fieldMap: FieldMap, ix: Int, iy: Int) : Building(fieldMap, ix, iy) {
     private val texture = Texture("block.png")
 
     init {

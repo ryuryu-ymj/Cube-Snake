@@ -3,6 +3,7 @@ package io.github.ryuryu_ymj.cube_snake
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -32,6 +33,7 @@ class Game : ApplicationAdapter() {
     private lateinit var stageUi: Stage
     private lateinit var batchUi: SpriteBatch
     private lateinit var camera: OrthographicCamera
+    private val asset = AssetManager()
 
     private var font: BitmapFont? = null
     private var score = 0
@@ -42,6 +44,11 @@ class Game : ApplicationAdapter() {
     private lateinit var goal: Goal
 
     override fun create() {
+        asset.load("block.png", Texture::class.java)
+        asset.load("goal.png", Texture::class.java)
+        asset.load("snake_body.png", Texture::class.java)
+        while (!asset.update()) // アセットの読み込み
+
         //batch.projectionMatrix = stage.camera.combined
         camera = OrthographicCamera(30f, (30 * Gdx.graphics.height / Gdx.graphics.width).toFloat())
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0f)
@@ -149,23 +156,21 @@ class Game : ApplicationAdapter() {
             for ((iy, line) in lines.withIndex()) {
                 for ((ix, cell) in line.chunked(2).withIndex()) {
                     when (cell) {
-                        "b0" -> Block(fieldMap, ix, iy).let {
+                        "b0" -> Block(asset, fieldMap, ix, iy).let {
                             blocks.add(it)
                             fieldMap.addActor(stage, it)
                         }
-                        "p0" -> snake = Snake().also {
-                            it.create(ix, iy, 8, fieldMap, stage)
-                        }
-                        "gl" -> goal = Goal(fieldMap, ix, iy, Direction.LEFT).also {
+                        "p0" -> snake = Snake(asset, stage, fieldMap, ix, iy, 8)
+                        "gl" -> goal = Goal(asset, fieldMap, ix, iy, Direction.LEFT).also {
                             fieldMap.addActor(stage, it)
                         }
-                        "gr" -> goal = Goal(fieldMap, ix, iy, Direction.RIGHT).also {
+                        "gr" -> goal = Goal(asset, fieldMap, ix, iy, Direction.RIGHT).also {
                             fieldMap.addActor(stage, it)
                         }
-                        "gd" -> goal = Goal(fieldMap, ix, iy, Direction.DOWN).also {
+                        "gd" -> goal = Goal(asset, fieldMap, ix, iy, Direction.DOWN).also {
                             fieldMap.addActor(stage, it)
                         }
-                        "gu" -> goal = Goal(fieldMap, ix, iy, Direction.UP).also {
+                        "gu" -> goal = Goal(asset, fieldMap, ix, iy, Direction.UP).also {
                             fieldMap.addActor(stage, it)
                         }
                     }

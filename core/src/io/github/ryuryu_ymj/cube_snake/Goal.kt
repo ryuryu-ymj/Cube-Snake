@@ -1,11 +1,13 @@
 package io.github.ryuryu_ymj.cube_snake
 
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
-class Goal(fieldMap: FieldMap, indexX: Int, indexY: Int, val direction: Direction) : Building(fieldMap, indexX, indexY) {
-    private val texture = TextureRegion(Texture("goal.png"))
+class Goal(asset: AssetManager, fieldMap: FieldMap, indexX: Int, indexY: Int, val direction: Direction)
+    : Building(asset, fieldMap, indexX, indexY) {
+    private val texture = TextureRegion(asset.get<Texture>("goal.png"))
     val entranceIndexXAndY
         get() = indexX + when (direction) {
             Direction.RIGHT -> 1

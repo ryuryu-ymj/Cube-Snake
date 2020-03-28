@@ -1,10 +1,11 @@
 package io.github.ryuryu_ymj.cube_snake
 
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 
-class Block(fieldMap: FieldMap, ix: Int, iy: Int) : Building(fieldMap, ix, iy) {
-    private val texture = Texture("block.png")
+class Block(asset: AssetManager, fieldMap: FieldMap, ix: Int, iy: Int) : Building(asset, fieldMap, ix, iy) {
+    private val texture = asset.get<Texture>("block.png")//Texture("block.png")
 
     init {
         /* 拡大・縮小時も滑らかにする. */

@@ -97,7 +97,7 @@ class Game : ApplicationAdapter() {
                     }) fall()
 
             // ゴール
-            if (head.indexX to head.indexY == goal.entranceIndexXY) {
+            if (head.indexX to head.indexY == goal.entranceIndexXAndY) {
                 if (input.let { it != null && it.reverse == goal.direction }) {
                     println("goal")
                 }

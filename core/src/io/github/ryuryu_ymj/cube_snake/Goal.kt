@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 
 class Goal(fieldMap: FieldMap, indexX: Int, indexY: Int, val direction: Direction) : Building(fieldMap, indexX, indexY) {
     private val texture = TextureRegion(Texture("goal.png"))
-    val entranceIndexXY
+    val entranceIndexXAndY
         get() = indexX + when (direction) {
             Direction.RIGHT -> 1
             Direction.LEFT -> -1

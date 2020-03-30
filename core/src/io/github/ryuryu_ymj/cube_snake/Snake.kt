@@ -1,7 +1,5 @@
 package io.github.ryuryu_ymj.cube_snake
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -30,7 +28,7 @@ class Snake(asset: AssetManager, stage: Stage, fieldMap: FieldMap, indexX: Int, 
         if (movable.all { !it }) die() // 自死
         if (cnt <= 0) {
             // 入力による移動
-            input.let {
+            inputDir.let {
                 if (it != null && movable[it()]) proceed(it)
             }
         }

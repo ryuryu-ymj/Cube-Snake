@@ -12,38 +12,39 @@ import com.badlogic.gdx.utils.GdxRuntimeException
 import com.badlogic.gdx.utils.viewport.FitViewport
 
 class PlayScreen(private val asset: AssetManager) : Screen {
-    lateinit var stage: Stage
-    lateinit var batch: SpriteBatch
-    lateinit var stageUi: Stage
-    lateinit var batchUi: SpriteBatch
-    lateinit var camera: OrthographicCamera
-    lateinit var font: BitmapFont
+    private val camera = OrthographicCamera(30f, (30 * Gdx.graphics.height / Gdx.graphics.width).toFloat())
+    private val batch = SpriteBatch()
+    private val stage = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera), batch)
+    private val batchUi = SpriteBatch()
+    private val stageUi = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT), batchUi)
+    private val font = asset.get<BitmapFont>("font.ttf")
 
-    var score = 0
+    private var score = 0
+    private var stageNum = 1
+    var toNextStage = false
+        private set
 
     private var fieldMap = FieldMap()
     private val blocks = mutableListOf<Block>()
-    lateinit var snake: Snake
+    private lateinit var snake: Snake
     private lateinit var goal: Goal
 
-    override fun show() {
-        camera = OrthographicCamera(30f, (30 * Gdx.graphics.height / Gdx.graphics.width).toFloat())
+    init {
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0f)
         camera.update()
-        batch = SpriteBatch()
         batch.projectionMatrix = camera.combined
-        stage = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera), batch)
         Gdx.input.inputProcessor = stage
+    }
 
-        batchUi = SpriteBatch()
-        stageUi = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT), batchUi)
-
-        font = asset.get("font.ttf")
-
-        readStage(1)
+    override fun show() {
+        readStage(stageNum)
+        toNextStage = false
     }
 
     override fun hide() {
+        stageNum++
+        blocks.clear()
+        stage.clear()
     }
 
     override fun render(delta: Float) {
@@ -62,6 +63,8 @@ class PlayScreen(private val asset: AssetManager) : Screen {
 
         stageUi.draw()
 
+        stage.act()
+
         snake.run {
             // 移動方向の制限
             movable[Direction.LEFT()] = !fieldMap[head.indexX - 1, head.indexY].let { it is Building || it is SnakeBody }
@@ -73,16 +76,17 @@ class PlayScreen(private val asset: AssetManager) : Screen {
             if (!bodies.any {
                         fieldMap[it.indexX, it.indexY - 1] is Building
                     }) fall()
+        }
 
-            // ゴール
-            if (head.indexX to head.indexY == goal.entranceIndexXAndY) {
-                if (inputDir.let { it != null && it.reverse == goal.direction }) {
-                    println("goal")
-                }
+        // ゴール
+        if (snake.head.indexX to snake.head.indexY == goal.entranceIndexXAndY) {
+            if (inputDir.let { it != null && it.reverse == goal.direction }) {
+                println("goal")
+                toNextStage = true
             }
         }
 
-        stage.act()
+        //println("${snake.head.indexX}, ${snake.head.indexY}")
     }
 
     override fun pause() {
@@ -114,7 +118,9 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                             blocks.add(it)
                             fieldMap.addActor(stage, it)
                         }
-                        "p0" -> snake = Snake(asset, stage, fieldMap, ix, iy, 8)
+                        "p0" -> {
+                            snake = Snake(asset, stage, fieldMap, ix, iy, 8)
+                        }
                         "gl" -> goal = Goal(asset, fieldMap, ix, iy, Direction.LEFT).also {
                             fieldMap.addActor(stage, it)
                         }

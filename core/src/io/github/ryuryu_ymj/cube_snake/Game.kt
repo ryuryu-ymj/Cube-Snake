@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter
-import com.badlogic.gdx.utils.GdxRuntimeException
 
 
 const val VIEWPORT_WIDTH = 2560f
@@ -30,8 +29,8 @@ val inputDir: Direction?
 
 class Game : Game() {
     private val asset = AssetManager()
-
-    var font: BitmapFont? = null
+    private lateinit var playScreen: PlayScreen
+    private lateinit var stageStartScreen: StageStartScreen
 
     override fun create() {
         //アセットの読み込み
@@ -46,22 +45,40 @@ class Game : Game() {
             fontFileName = "font.ttf"
             fontParameters.apply {
                 size = 48
-                color = Color.CYAN
+                color = Color.BLACK
                 incremental = true
                 magFilter = Texture.TextureFilter.Linear
                 minFilter = Texture.TextureFilter.Linear
-                borderWidth = 2f
-                borderColor = Color.DARK_GRAY
-                shadowColor = Color.BROWN
-                shadowOffsetX = 7
-                shadowOffsetY = 7
+                //borderWidth = 2f
+                //borderColor = Color.DARK_GRAY
+                //shadowColor = Color.BROWN
+                //shadowOffsetX = 7
+                //shadowOffsetY = 7
             }
         }
         asset.load("font.ttf", BitmapFont::class.java, myFont)
 
         asset.finishLoading()
 
-        setScreen(PlayScreen(asset))
+        playScreen = PlayScreen(asset)
+        stageStartScreen = StageStartScreen(asset)
+        setScreen(stageStartScreen)
+    }
+
+    override fun render() {
+        super.render()
+        when (screen) {
+            is StageStartScreen -> {
+                if (stageStartScreen.toPlayScreen()) {
+                    setScreen(playScreen)
+                }
+            }
+            is PlayScreen -> {
+                if (playScreen.toNextStage) {
+                    setScreen(stageStartScreen)
+                }
+            }
+        }
     }
 
     override fun resize(width: Int, height: Int) {
@@ -69,27 +86,5 @@ class Game : Game() {
 
     override fun dispose() {
         asset.dispose()
-        font?.dispose()
-    }
-
-    private fun createFont() {
-        try {
-            val generator = FreeTypeFontGenerator(Gdx.files.internal("font.ttf"))
-            font = generator.generateFont(
-                    FreeTypeFontGenerator.FreeTypeFontParameter().apply {
-                        size = 48
-                        color = Color.CYAN
-                        incremental = true
-                        magFilter = Texture.TextureFilter.Linear
-                        minFilter = Texture.TextureFilter.Linear
-                        borderWidth = 2f
-                        borderColor = Color.DARK_GRAY
-                        shadowColor = Color.BROWN
-                        shadowOffsetX = 7
-                        shadowOffsetY = 7
-                    })
-        } catch (err: GdxRuntimeException) {
-            println("フォントファイルの読み取りに失敗しました ${err.message}")
-        }
     }
 }

@@ -16,10 +16,6 @@ class SnakeBody(asset: AssetManager, fieldMap: FieldMap, ix: Int, iy: Int) : MyA
         height = texture.height.toFloat()
     }
 
-    override fun dispose() {
-        texture.dispose()
-    }
-
     override fun draw(batch: Batch, parentAlpha: Float) {
         batch.run {
             setColor(color.r, color.g, color.b, color.a * parentAlpha)

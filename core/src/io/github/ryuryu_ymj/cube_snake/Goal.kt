@@ -26,10 +26,6 @@ class Goal(asset: AssetManager, fieldMap: FieldMap, indexX: Int, indexY: Int, va
         height = texture.texture.height.toFloat()
     }
 
-    override fun dispose() {
-        texture.texture.dispose()
-    }
-
     override fun draw(batch: Batch, parentAlpha: Float) {
         batch.run {
             setColor(color.r, color.g, color.b, color.a * parentAlpha)

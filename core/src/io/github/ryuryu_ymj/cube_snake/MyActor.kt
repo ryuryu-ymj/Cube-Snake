@@ -8,8 +8,6 @@ abstract class MyActor(private val asset: AssetManager, private val fieldMap: Fi
         setPosition((indexX * PANEL_UNIT).toFloat(), (indexY * PANEL_UNIT).toFloat())
     }
 
-    abstract fun dispose()
-
     override fun act(delta: Float) {
         super.act(delta)
         setPosition((indexX * PANEL_UNIT).toFloat(), (indexY * PANEL_UNIT).toFloat())

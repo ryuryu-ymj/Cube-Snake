@@ -120,9 +120,8 @@ class Game : ApplicationAdapter() {
     }
 
     override fun dispose() {
+        asset.dispose()
         stage.dispose()
-        snake.dispose()
-        blocks.forEach { it.dispose() }
         batch.dispose()
         font?.dispose()
     }

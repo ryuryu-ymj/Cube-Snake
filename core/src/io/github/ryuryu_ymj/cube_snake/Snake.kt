@@ -25,10 +25,6 @@ class Snake(asset: AssetManager, stage: Stage, fieldMap: FieldMap, indexX: Int, 
         }
     }
 
-    fun dispose() {
-        bodies.forEach { it.dispose() }
-    }
-
     override fun act(delta: Float) {
         super.act(delta)
         if (movable.all { !it }) die() // 自死

@@ -3,7 +3,7 @@ package io.github.ryuryu_ymj.cube_snake
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Actor
 
-abstract class MyActor(private val asset: AssetManager, private val fieldMap: FieldMap, var indexX: Int = 0, var indexY: Int = 0) : Actor() {
+abstract class MyActor(asset: AssetManager, private val fieldMap: FieldMap, var indexX: Int = 0, var indexY: Int = 0) : Actor() {
     init {
         setPosition((indexX * PANEL_UNIT).toFloat(), (indexY * PANEL_UNIT).toFloat())
     }

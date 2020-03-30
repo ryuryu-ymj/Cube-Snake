@@ -44,11 +44,6 @@ class Game : ApplicationAdapter() {
     private lateinit var goal: Goal
 
     override fun create() {
-        asset.load("block.png", Texture::class.java)
-        asset.load("goal.png", Texture::class.java)
-        asset.load("snake_body.png", Texture::class.java)
-        while (!asset.update()) // アセットの読み込み
-
         //batch.projectionMatrix = stage.camera.combined
         camera = OrthographicCamera(30f, (30 * Gdx.graphics.height / Gdx.graphics.width).toFloat())
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0f)
@@ -61,9 +56,14 @@ class Game : ApplicationAdapter() {
         batchUi = SpriteBatch()
         stageUi = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT), batchUi)
 
-        readStage(1)
-
+        //アセットの読み込み
+        asset.load("block.png", Texture::class.java)
+        asset.load("goal.png", Texture::class.java)
+        asset.load("snake_body.png", Texture::class.java)
+        asset.finishLoading()
         createFont()
+
+        readStage(1)
     }
 
     override fun render() {

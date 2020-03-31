@@ -12,6 +12,7 @@ class Snake(asset: AssetManager, stage: Stage, fieldMap: FieldMap, indexX: Int, 
     var isAlive = true
         private set
     val movable = Array(4) { true }
+    var canInput = true
 
     init {
         stage.addActor(this)
@@ -26,10 +27,15 @@ class Snake(asset: AssetManager, stage: Stage, fieldMap: FieldMap, indexX: Int, 
     override fun act(delta: Float) {
         super.act(delta)
         if (movable.all { !it }) die() // 自死
-        if (cnt <= 0) {
+        if (cnt <= 0 && canInput) {
             // 入力による移動
             inputDir.let {
-                if (it != null && movable[it()]) proceed(it)
+                if (it != null && movable[it()]){
+                    proceed(it)
+                    print("input ")
+                    bodies.forEach { print("(${it.indexX}, ${it.indexY})") }
+                    println()
+                }
             }
         }
 
@@ -54,13 +60,16 @@ class Snake(asset: AssetManager, stage: Stage, fieldMap: FieldMap, indexX: Int, 
             goalX = indexX
             goalY = indexY
         }
-        cnt = 20
+        cnt = 60
     }
 
     fun fall() {
+        print("fall ")
         bodies.forEach {
             it.moveByChange(0, -1)
+            print("(${it.indexX}, ${it.indexY})")
         }
+        println()
     }
 
     fun die() {

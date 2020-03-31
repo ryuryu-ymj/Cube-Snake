@@ -66,16 +66,24 @@ class PlayScreen(private val asset: AssetManager) : Screen {
         stage.act()
 
         snake.run {
+            // 落下
+            if (!bodies.any {
+                        fieldMap[it.indexX, it.indexY - 1] is Building
+                    }) {
+                fall()
+                snake.canInput = false
+            } else {
+                snake.canInput = true
+            }
+
+            print("collision")
+            snake.bodies.forEach { print("(${it.indexX}, ${it.indexY}, ${fieldMap[it.indexX, it.indexY]})") }
+            println()
             // 移動方向の制限
             movable[Direction.LEFT()] = !fieldMap[head.indexX - 1, head.indexY].let { it is Building || it is SnakeBody }
             movable[Direction.RIGHT()] = !fieldMap[head.indexX + 1, head.indexY].let { it is Building || it is SnakeBody }
             movable[Direction.DOWN()] = !fieldMap[head.indexX, head.indexY - 1].let { it is Building || it is SnakeBody }
             movable[Direction.UP()] = !fieldMap[head.indexX, head.indexY + 1].let { it is Building || it is SnakeBody }
-
-            // 落下
-            if (!bodies.any {
-                        fieldMap[it.indexX, it.indexY - 1] is Building
-                    }) fall()
         }
 
         // ゴール

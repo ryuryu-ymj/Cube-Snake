@@ -33,11 +33,12 @@ class Game : Game() {
     private lateinit var stageStartScreen: StageStartScreen
 
     override fun create() {
-        //アセットの読み込み
+        //画像の読み込み
         asset.load("block.png", Texture::class.java)
         asset.load("goal.png", Texture::class.java)
         asset.load("snake_body.png", Texture::class.java)
 
+        //フォントの読み込み
         val resolver: FileHandleResolver = InternalFileHandleResolver()
         asset.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(resolver))
         asset.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(resolver))
@@ -58,7 +59,7 @@ class Game : Game() {
         }
         asset.load("font.ttf", BitmapFont::class.java, myFont)
 
-        asset.finishLoading()
+        asset.finishLoading() //アセットの読み込みを完了する
 
         playScreen = PlayScreen(asset)
         stageStartScreen = StageStartScreen(asset)

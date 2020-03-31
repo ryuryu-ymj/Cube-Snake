@@ -118,9 +118,6 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                             blocks.add(it)
                             fieldMap.addActor(stage, it)
                         }
-                        "p0" -> {
-                            snake = Snake(asset, stage, fieldMap, ix, iy, 8)
-                        }
                         "gl" -> goal = Goal(asset, fieldMap, ix, iy, Direction.LEFT).also {
                             fieldMap.addActor(stage, it)
                         }
@@ -133,6 +130,9 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                         "gu" -> goal = Goal(asset, fieldMap, ix, iy, Direction.UP).also {
                             fieldMap.addActor(stage, it)
                         }
+                    }
+                    if (cell[0] == 'p') {
+                        snake = Snake(asset, stage, fieldMap, ix, iy, cell[1].toString().toInt())
                     }
                 }
             }

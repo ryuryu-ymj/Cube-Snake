@@ -61,7 +61,7 @@ class Snake(asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: I
     }
 
     fun fall() {
-        fieldMap.moveActorsByChange(bodies.toTypedArray(), dIndexYs = IntArray(bodies.size) { -1 })
+        bodies.forEach { it.moveBy(0, -1) }
     }
 
     fun die() {

@@ -17,7 +17,7 @@ abstract class MyActor(asset: AssetManager, private val fieldMap: FieldMap, var 
         fieldMap.moveActor(this, indexX, indexY)
     }
 
-    fun moveByChange(dIndexX: Int = 0, dIndexY: Int = 0) {
-        fieldMap.moveActorByChange(this, dIndexX, dIndexY)
+    fun moveBy(dIndexX: Int = 0, dIndexY: Int = 0) {
+        fieldMap.moveActorBy(this, dIndexX, dIndexY)
     }
 }

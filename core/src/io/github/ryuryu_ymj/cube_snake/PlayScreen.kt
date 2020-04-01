@@ -63,6 +63,8 @@ class PlayScreen(private val asset: AssetManager) : Screen {
 
         stageUi.draw()
 
+        fieldMap.begin()
+
         stage.act()
 
         snake.run {
@@ -91,7 +93,7 @@ class PlayScreen(private val asset: AssetManager) : Screen {
             }
         }
 
-        //println("${snake.head.indexX}, ${snake.head.indexY}")
+        fieldMap.end()
     }
 
     override fun pause() {

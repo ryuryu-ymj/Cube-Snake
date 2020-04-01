@@ -76,9 +76,6 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                 snake.canInput = true
             }
 
-            print("collision")
-            snake.bodies.forEach { print("(${it.indexX}, ${it.indexY}, ${fieldMap[it.indexX, it.indexY]})") }
-            println()
             // 移動方向の制限
             movable[Direction.LEFT()] = !fieldMap[head.indexX - 1, head.indexY].let { it is Building || it is SnakeBody }
             movable[Direction.RIGHT()] = !fieldMap[head.indexX + 1, head.indexY].let { it is Building || it is SnakeBody }

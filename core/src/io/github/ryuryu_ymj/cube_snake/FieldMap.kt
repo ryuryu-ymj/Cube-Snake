@@ -31,7 +31,21 @@ class FieldMap(val sizeX: Int = 0, val sizeY: Int = 0) {
         }
     }
 
-    fun moveActorByChange(actor: MyActor, dIndexX: Int, dIndexY: Int) {
+    /**
+     * 複数のactorを同時に動かすときはこれを使って
+     */
+    fun moveActors(actors: Array<MyActor>, indexXs: IntArray, indexYs: IntArray) {
+        actors.forEachIndexed { i, actor ->
+            fieldMap[actor.indexX][actor.indexY] = null
+            actor.indexX = indexXs[i]
+            actor.indexY = indexYs[i]
+        }
+        actors.forEach {
+            fieldMap[it.indexX][it.indexY] = it
+        }
+    }
+
+    fun moveActorByChange(actor: MyActor, dIndexX: Int = 0, dIndexY: Int = 0) {
         try {
             actor.let {
                 fieldMap[it.indexX][it.indexY] = null
@@ -41,6 +55,21 @@ class FieldMap(val sizeX: Int = 0, val sizeY: Int = 0) {
             }
         } catch (err: ArrayIndexOutOfBoundsException) {
             println("filedMapのaddActor($actor, $dIndexX, $dIndexY)がsizeX:$sizeX, sizeY:$sizeY の範囲を超えました")
+        }
+    }
+
+    /**
+     * 複数のactorを同時に動かすときはこれを使って
+     */
+    fun moveActorsByChange(actors: Array<MyActor>, dIndexXs: IntArray = IntArray(actors.size) {0},
+                           dIndexYs: IntArray = IntArray(actors.size) {0}) {
+        actors.forEachIndexed { i, actor ->
+            fieldMap[actor.indexX][actor.indexY] = null
+            actor.indexX += dIndexXs[i]
+            actor.indexY += dIndexYs[i]
+        }
+        actors.forEach {
+            fieldMap[it.indexX][it.indexY] = it
         }
     }
 

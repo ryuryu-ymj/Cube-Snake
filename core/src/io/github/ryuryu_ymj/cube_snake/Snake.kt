@@ -4,7 +4,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 
-class Snake(asset: AssetManager, stage: Stage, fieldMap: FieldMap, indexX: Int, indexY: Int, bodyCnt: Int) : Actor() {
+class Snake(asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: Int, indexY: Int, bodyCnt: Int) : Actor() {
     val bodies = mutableListOf<SnakeBody>()
     val head
         get() = bodies[0]
@@ -30,11 +30,8 @@ class Snake(asset: AssetManager, stage: Stage, fieldMap: FieldMap, indexX: Int, 
         if (cnt <= 0 && canInput) {
             // 入力による移動
             inputDir.let {
-                if (it != null && movable[it()]){
+                if (it != null && movable[it()]) {
                     proceed(it)
-                    print("input ")
-                    bodies.forEach { print("(${it.indexX}, ${it.indexY})") }
-                    println()
                 }
             }
         }
@@ -60,16 +57,11 @@ class Snake(asset: AssetManager, stage: Stage, fieldMap: FieldMap, indexX: Int, 
             goalX = indexX
             goalY = indexY
         }
-        cnt = 60
+        cnt = 15
     }
 
     fun fall() {
-        print("fall ")
-        bodies.forEach {
-            it.moveByChange(0, -1)
-            print("(${it.indexX}, ${it.indexY})")
-        }
-        println()
+        fieldMap.moveActorsByChange(bodies.toTypedArray(), dIndexYs = IntArray(bodies.size) { -1 })
     }
 
     fun die() {

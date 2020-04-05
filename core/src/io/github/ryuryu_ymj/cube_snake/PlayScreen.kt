@@ -97,7 +97,13 @@ class PlayScreen(private val asset: AssetManager) : Screen {
             }
         }
 
-        items.find { fieldMap[it.indexX, it.indexY] is SnakeBody }?.remove()
+        items.find { fieldMap[it.indexX, it.indexY] is SnakeBody }?.let {
+            it.remove()
+            items.remove(it)
+            when (it) {
+                is Cherry -> snake.grow()
+            }
+        }
 
         fieldMap.end()
     }

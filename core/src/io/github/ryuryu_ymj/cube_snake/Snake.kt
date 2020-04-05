@@ -4,7 +4,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 
-class Snake(asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: Int, indexY: Int, bodyCnt: Int) : Actor() {
+class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: Int, indexY: Int, bodyCnt: Int) : Actor() {
     val bodies = mutableListOf<SnakeBody>()
     val head
         get() = bodies[0]
@@ -13,6 +13,7 @@ class Snake(asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: I
         private set
     val movable = Array(4) { true }
     var canInput = true
+    private var canGrow = false
 
     init {
         stage.addActor(this)
@@ -31,6 +32,13 @@ class Snake(asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: I
             // 入力による移動
             inputDir.let {
                 if (it != null && movable[it()]) {
+                    if (canGrow) {
+                        SnakeBody(asset, fieldMap, 0, 0).let {
+                            fieldMap.addActor(stage, it)
+                            bodies.add(it)
+                        }
+                        canGrow = false
+                    }
                     proceed(it)
                 }
             }
@@ -58,5 +66,9 @@ class Snake(asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: I
     fun die() {
         isAlive = false
         println("player died")
+    }
+
+    fun grow() {
+        canGrow = true
     }
 }

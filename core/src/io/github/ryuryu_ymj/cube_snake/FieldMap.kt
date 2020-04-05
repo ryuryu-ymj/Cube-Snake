@@ -17,7 +17,11 @@ class FieldMap(val sizeX: Int = 0, val sizeY: Int = 0) {
             actor.indexY = iy
         }
         change.forEach { (actor, ix, iy) ->
-            fieldMap[ix][iy] = actor
+            try {
+                fieldMap[ix][iy] = actor
+            } catch (err: ArrayIndexOutOfBoundsException) {
+                println("actor:$actor, indexX:$ix, indexY:$iy がsizeX:$sizeX, sizeY:$sizeY の範囲を超えました")
+            }
         }
     }
 
@@ -30,7 +34,7 @@ class FieldMap(val sizeX: Int = 0, val sizeY: Int = 0) {
                 stage.addActor(it)
             }
         } catch (err: ArrayIndexOutOfBoundsException) {
-            println("filedMapのaddActor($stage, $actor, $indexX, $indexY)がsizeX:$sizeX, sizeY:$sizeY の範囲を超えました")
+            println("actor:$actor, indexX:$indexX, indexY:$indexY がsizeX:$sizeX, sizeY:$sizeY の範囲を超えました")
         }
     }
 

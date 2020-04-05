@@ -37,6 +37,7 @@ class Game : Game() {
         asset.load("block.png", Texture::class.java)
         asset.load("goal.png", Texture::class.java)
         asset.load("snake_body.png", Texture::class.java)
+        asset.load("cherry.png", Texture::class.java)
 
         //フォントの読み込み
         val resolver: FileHandleResolver = InternalFileHandleResolver()
@@ -50,11 +51,6 @@ class Game : Game() {
                 incremental = true
                 magFilter = Texture.TextureFilter.Linear
                 minFilter = Texture.TextureFilter.Linear
-                //borderWidth = 2f
-                //borderColor = Color.DARK_GRAY
-                //shadowColor = Color.BROWN
-                //shadowOffsetX = 7
-                //shadowOffsetY = 7
             }
         }
         asset.load("font.ttf", BitmapFont::class.java, myFont)

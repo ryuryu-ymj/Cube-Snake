@@ -26,6 +26,7 @@ class PlayScreen(private val asset: AssetManager) : Screen {
 
     private var fieldMap = FieldMap()
     private val blocks = mutableListOf<Block>()
+    private val items = mutableListOf<Item>()
     private lateinit var snake: Snake
     private lateinit var goal: Goal
 
@@ -63,8 +64,11 @@ class PlayScreen(private val asset: AssetManager) : Screen {
 
         stageUi.draw()
 
-        fieldMap.begin()
+        detectCollision()
+    }
 
+    fun detectCollision() {
+        fieldMap.begin()
         stage.act()
 
         snake.run {
@@ -92,6 +96,8 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                 toNextStage = true
             }
         }
+
+        items.find { fieldMap[it.indexX, it.indexY] is SnakeBody }?.remove()
 
         fieldMap.end()
     }
@@ -135,6 +141,10 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                             fieldMap.addActor(stage, it)
                         }
                         "gu" -> goal = Goal(asset, fieldMap, ix, iy, Direction.UP).also {
+                            fieldMap.addActor(stage, it)
+                        }
+                        "ic" -> Cherry(asset, fieldMap, ix, iy).let {
+                            items.add(it)
                             fieldMap.addActor(stage, it)
                         }
                     }

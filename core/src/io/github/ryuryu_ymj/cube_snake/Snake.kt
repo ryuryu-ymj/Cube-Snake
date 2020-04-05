@@ -40,22 +40,13 @@ class Snake(asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: I
     }
 
     private fun proceed(direction: Direction) {
-        var goalX = head.indexX + when (direction) {
-            Direction.RIGHT -> 1
-            Direction.LEFT -> -1
-            else -> 0
-        }
-        var goalY = head.indexY + when (direction) {
-            Direction.UP -> 1
-            Direction.DOWN -> -1
-            else -> 0
-        }
-        bodies.forEach {
-            val indexX = it.indexX
-            val indexY = it.indexY
-            it.move(goalX, goalY)
-            goalX = indexX
-            goalY = indexY
+        head.moveBy(when (direction) {
+            Direction.RIGHT -> 1; Direction.LEFT -> -1; else -> 0
+        }, when (direction) {
+            Direction.UP -> 1; Direction.DOWN -> -1; else -> 0
+        })
+        for (i in 1 until bodies.size) {
+            bodies[i].move(bodies[i - 1].indexX, bodies[i - 1].indexY)
         }
         cnt = 15
     }

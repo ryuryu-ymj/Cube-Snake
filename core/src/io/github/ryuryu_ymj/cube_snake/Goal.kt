@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 
 class Goal(asset: AssetManager, fieldMap: FieldMap, indexX: Int, indexY: Int, val direction: Direction)
     : Building(asset, fieldMap, indexX, indexY) {
-    private val texture = TextureRegion(asset.get<Texture>("goal.png"))
+    private val region = TextureRegion(asset.get<Texture>("goal.png"))
     val entranceIndexXAndY
         get() = indexX + when (direction) {
             Direction.RIGHT -> 1
@@ -21,15 +21,15 @@ class Goal(asset: AssetManager, fieldMap: FieldMap, indexX: Int, indexY: Int, va
 
     init {
         /* 拡大・縮小時も滑らかにする. */
-        texture.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        width = texture.texture.width.toFloat()
-        height = texture.texture.height.toFloat()
+        region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
+        width = region.texture.width.toFloat()
+        height = region.texture.height.toFloat()
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         batch.run {
             setColor(color.r, color.g, color.b, color.a * parentAlpha)
-            draw(texture, x - width / 2, y - height / 2, width / 2, height / 2, width, height, 1f, 1f, direction.degree)
+            draw(region, x - width / 2, y - height / 2, width / 2, height / 2, width, height, 1f, 1f, direction.degree)
         }
     }
 }

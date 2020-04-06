@@ -18,7 +18,7 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
     init {
         stage.addActor(this)
         for (i in 0 until bodyCnt) {
-            SnakeBody(asset, fieldMap, indexX - i, indexY).let {
+            SnakeBody(asset, fieldMap, indexX - i, indexY, i == 0).let {
                 fieldMap.addActor(stage, it)
                 bodies.add(it)
             }
@@ -33,7 +33,7 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
             inputDir.let {
                 if (it != null && movable[it()]) {
                     if (canGrow) {
-                        SnakeBody(asset, fieldMap, 0, 0).let {
+                        SnakeBody(asset, fieldMap, 0, 0, false).let {
                             fieldMap.addActor(stage, it)
                             bodies.add(it)
                         }
@@ -48,6 +48,8 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
     }
 
     private fun proceed(direction: Direction) {
+        var dir1 = head.direction
+        head.direction = direction
         head.moveBy(when (direction) {
             Direction.RIGHT -> 1; Direction.LEFT -> -1; else -> 0
         }, when (direction) {
@@ -55,6 +57,9 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
         })
         for (i in 1 until bodies.size) {
             bodies[i].move(bodies[i - 1].indexX, bodies[i - 1].indexY)
+            val dir2 = bodies[i].direction
+            bodies[i].direction = dir1
+            dir1 = dir2
         }
         cnt = 15
     }

@@ -15,8 +15,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter
 
 
-const val VIEWPORT_WIDTH = 2560f
-const val VIEWPORT_HEIGHT = 1440f
+const val VIEWPORT_WIDTH = 3200f
+const val VIEWPORT_HEIGHT = 1800f
 const val PANEL_UNIT = 100
 val inputDir: Direction?
     get() = when {
@@ -37,6 +37,7 @@ class Game : Game() {
         asset.load("block.png", Texture::class.java)
         asset.load("goal.png", Texture::class.java)
         asset.load("snake_body.png", Texture::class.java)
+        asset.load("snake_head.png", Texture::class.java)
         asset.load("cherry.png", Texture::class.java)
 
         //フォントの読み込み

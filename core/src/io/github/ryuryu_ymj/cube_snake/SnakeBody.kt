@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
-class SnakeBody(asset: AssetManager, fieldMap: FieldMap, ix: Int, iy: Int, isHead: Boolean) : MyActor(asset, fieldMap, ix, iy) {
+class SnakeBody(asset: AssetManager, fieldMap: FieldMap, ix: Int, iy: Int, isHead: Boolean, var direction: Direction = Direction.RIGHT)
+    : MyActor(asset, fieldMap, ix, iy) {
     private val region = TextureRegion(asset.get<Texture>(if (isHead) "snake_head.png" else "snake_body.png"))
-    var direction = Direction.RIGHT
 
     init {
         /* 拡大・縮小時も滑らかにする. */

@@ -10,11 +10,11 @@ abstract class MyActor(asset: AssetManager, private val fieldMap: FieldMap, var 
 
     override fun act(delta: Float) {
         super.act(delta)
-        setPosition((indexX * PANEL_UNIT).toFloat(), (indexY * PANEL_UNIT).toFloat())
+        //setPosition((indexX * PANEL_UNIT).toFloat(), (indexY * PANEL_UNIT).toFloat())
     }
 
-    fun move(indexX: Int, indexY: Int) {
-        fieldMap.moveActor(this, indexX, indexY)
+    fun moveTo(indexX: Int, indexY: Int) {
+        fieldMap.moveActorTo(this, indexX, indexY)
     }
 
     fun moveBy(dIndexX: Int = 0, dIndexY: Int = 0) {

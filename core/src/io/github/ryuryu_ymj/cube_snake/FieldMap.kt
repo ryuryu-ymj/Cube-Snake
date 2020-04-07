@@ -38,12 +38,12 @@ class FieldMap(val sizeX: Int = 0, val sizeY: Int = 0) {
         }
     }
 
-    fun moveActor(actor: MyActor, indexX: Int, indexY: Int) {
+    fun moveActorTo(actor: MyActor, indexX: Int, indexY: Int) {
         change.add(Triple(actor, indexX, indexY))
     }
 
     fun moveActorBy(actor: MyActor, dIndexX: Int = 0, dIndexY: Int = 0) {
-        moveActor(actor, actor.indexX + dIndexX, actor.indexY + dIndexY)
+        moveActorTo(actor, actor.indexX + dIndexX, actor.indexY + dIndexY)
     }
 
     fun deleteActor(actor: MyActor) {

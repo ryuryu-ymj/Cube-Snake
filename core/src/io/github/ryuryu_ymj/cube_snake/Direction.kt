@@ -12,4 +12,11 @@ enum class Direction(val index: Int, val degree: Float) {
             DOWN -> UP
             UP -> DOWN
         }
+
+    fun getDIndex() =
+            when (this) {
+                RIGHT -> 1; LEFT -> -1; else -> 0
+            } to when (this) {
+                UP -> 1; DOWN -> -1; else -> 0
+            }
 }

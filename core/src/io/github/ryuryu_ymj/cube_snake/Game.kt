@@ -15,8 +15,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter
 
 
-const val VIEWPORT_WIDTH = 3200f
-const val VIEWPORT_HEIGHT = 1800f
+const val VIEWPORT_WIDTH = 1500f * 16 / 9
+const val VIEWPORT_HEIGHT = 1500f
 const val PANEL_UNIT = 100
 val inputDir: Direction?
     get() = when {

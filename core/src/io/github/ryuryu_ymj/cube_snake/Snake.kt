@@ -3,6 +3,7 @@ package io.github.ryuryu_ymj.cube_snake
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 
 class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: Int, indexY: Int, bodyCnt: Int) : Actor() {
     val bodies = mutableListOf<SnakeBody>()
@@ -28,18 +29,20 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
     override fun act(delta: Float) {
         super.act(delta)
         if (movable.all { !it }) die() // 自死
-        if (cnt <= 0 && canInput) {
+        if (cnt <= 0 && head.actions.size == 0) {
             // 入力による移動
             inputDir.let {
                 if (it != null && movable[it()]) {
+                    val dir = bodies.last().direction
+                    proceed(it)
                     if (canGrow) {
-                        SnakeBody(asset, fieldMap, 0, 0, false).let {
+                        bodies.last().let {
+                            SnakeBody(asset, fieldMap, it.indexX, it.indexY, false, dir).let {
                             fieldMap.addActor(stage, it)
                             bodies.add(it)
-                        }
+                        } }
                         canGrow = false
                     }
-                    proceed(it)
                 }
             }
         }
@@ -50,22 +53,22 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
     private fun proceed(direction: Direction) {
         var dir1 = head.direction
         head.direction = direction
-        head.moveBy(when (direction) {
-            Direction.RIGHT -> 1; Direction.LEFT -> -1; else -> 0
-        }, when (direction) {
-            Direction.UP -> 1; Direction.DOWN -> -1; else -> 0
-        })
-        for (i in 1 until bodies.size) {
-            bodies[i].move(bodies[i - 1].indexX, bodies[i - 1].indexY)
-            val dir2 = bodies[i].direction
-            bodies[i].direction = dir1
+        bodies.forEach {
+            val (dix, diy) = it.direction.getDIndex()
+            it.moveBy(dix, diy)
+            it.addAction(Actions.moveBy(dix * PANEL_UNIT.toFloat(), diy * PANEL_UNIT.toFloat(), 0.5f))
+            val dir2 = it.direction
+            it.direction = dir1
             dir1 = dir2
         }
         cnt = 15
     }
 
     fun fall() {
-        bodies.forEach { it.moveBy(0, -1) }
+        bodies.forEach {
+            it.moveBy(0, -1)
+            it.addAction((Actions.moveBy(0f, -PANEL_UNIT.toFloat(), 0.5f)))
+        }
     }
 
     fun die() {

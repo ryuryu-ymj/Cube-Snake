@@ -51,15 +51,14 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
     }
 
     private fun proceed(direction: Direction) {
-        var dir1 = head.direction
-        head.direction = direction
+        var dir1 = direction
         bodies.forEach {
-            val (dix, diy) = it.direction.getDIndex()
-            it.moveBy(dix, diy)
-            it.addAction(Actions.moveBy(dix * PANEL_UNIT.toFloat(), diy * PANEL_UNIT.toFloat(), 0.5f))
             val dir2 = it.direction
             it.direction = dir1
             dir1 = dir2
+            val (dix, diy) = it.direction.getDIndex()
+            it.moveBy(dix, diy)
+            it.addAction(Actions.moveBy(dix * PANEL_UNIT.toFloat(), diy * PANEL_UNIT.toFloat(), 0.5f))
         }
         cnt = 15
     }

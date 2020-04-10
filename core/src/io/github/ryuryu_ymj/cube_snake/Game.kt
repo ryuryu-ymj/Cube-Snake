@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoa
 
 const val VIEWPORT_WIDTH = 1500f * 16 / 9
 const val VIEWPORT_HEIGHT = 1500f
-const val PANEL_UNIT = 100
+const val PANEL_UNIT = 100f
 val inputDir: Direction?
     get() = when {
         Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A) -> Direction.LEFT

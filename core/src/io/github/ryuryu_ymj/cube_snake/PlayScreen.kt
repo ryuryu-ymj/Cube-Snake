@@ -69,7 +69,6 @@ class PlayScreen(private val asset: AssetManager) : Screen {
 
     fun detectCollision() {
         fieldMap.begin()
-        stage.act()
 
         snake.run {
             // 落下
@@ -77,9 +76,6 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                         fieldMap[it.indexX, it.indexY - 1] is Building
                     }) {
                 fall()
-                snake.canInput = false
-            } else {
-                snake.canInput = true
             }
 
             // 移動方向の制限
@@ -104,6 +100,7 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                 is Cherry -> snake.grow()
             }
         }
+        stage.act()
 
         fieldMap.end()
     }

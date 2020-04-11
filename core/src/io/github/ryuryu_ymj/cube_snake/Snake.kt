@@ -1,6 +1,7 @@
 package io.github.ryuryu_ymj.cube_snake
 
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -9,12 +10,12 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
     val bodies = mutableListOf<SnakeBody>()
     val head
         get() = bodies[0]
-    private var cnt = 0
     var isAlive = true
         private set
     val movable = Array(4) { true }
-    var canInput = true
     private var canGrow = false
+    private var isProceeding = false
+    private var isFalling = false
 
     init {
         stage.addActor(this)
@@ -28,8 +29,17 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
 
     override fun act(delta: Float) {
         super.act(delta)
+
         if (movable.all { !it }) die() // 自死
-        if (cnt <= 0 && head.actions.size == 0) {
+
+        if (isFalling && !isProceeding) {
+            bodies.forEach {
+                it.moveBy(0, -1)
+                it.addAction(Actions.sequence(Actions.moveBy(0f, -PANEL_UNIT, 0.1f, Interpolation.pow2In)))
+            }
+        }
+
+        if (!isFalling && !isProceeding) {
             // 入力による移動
             inputDir.let {
                 if (it != null && movable[it()]) {
@@ -38,36 +48,39 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
                     if (canGrow) {
                         bodies.last().let {
                             SnakeBody(asset, fieldMap, it.indexX, it.indexY, false, dir).let {
-                            fieldMap.addActor(stage, it)
-                            bodies.add(it)
-                        } }
+                                fieldMap.addActor(stage, it)
+                                bodies.add(it)
+                            }
+                        }
                         canGrow = false
                     }
                 }
             }
         }
-
-        if (cnt > 0) cnt--
+        println(isProceeding)
     }
 
     private fun proceed(direction: Direction) {
         var dir1 = direction
-        bodies.forEach {
+        bodies.forEachIndexed { i, it ->
             val dir2 = it.direction
             it.direction = dir1
             dir1 = dir2
             val (dix, diy) = it.direction.getDIndex()
             it.moveBy(dix, diy)
-            it.addAction(Actions.moveBy(dix * PANEL_UNIT.toFloat(), diy * PANEL_UNIT.toFloat(), 0.5f))
+            if (i == bodies.size - 1) it.addAction(Actions.sequence(
+                    Actions.delay(0.05f * i),
+                    Actions.moveBy(dix * PANEL_UNIT, diy * PANEL_UNIT, 0.05f),
+                    Actions.run { isProceeding = false }))
+            else it.addAction(Actions.sequence(
+                    Actions.delay(0.05f * i),
+                    Actions.moveBy(dix * PANEL_UNIT, diy * PANEL_UNIT, 0.05f)))
         }
-        cnt = 15
+        isProceeding = true
     }
 
     fun fall() {
-        bodies.forEach {
-            it.moveBy(0, -1)
-            it.addAction((Actions.moveBy(0f, -PANEL_UNIT.toFloat(), 0.5f)))
-        }
+        isFalling = true
     }
 
     fun die() {

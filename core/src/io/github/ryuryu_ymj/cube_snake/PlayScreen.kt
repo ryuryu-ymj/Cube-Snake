@@ -64,19 +64,21 @@ class PlayScreen(private val asset: AssetManager) : Screen {
 
         stageUi.draw()
 
-        detectCollision()
+        update()
     }
 
-    fun detectCollision() {
+    private fun update() {
         fieldMap.begin()
 
         snake.run {
             // 落下
-            if (!bodies.any {
-                        fieldMap[it.indexX, it.indexY - 1] is Building
-                    }) {
-                fall()
-            }
+            bodies.map {
+                var i = 1
+                while (fieldMap[it.indexX, it.indexY - i] !is Building && fieldMap.checkInBounds(it.indexX, it.indexY - i)) {
+                    i++
+                }
+                i - 1
+            }.min().let { if (it != null) fall(it) }
 
             // 移動方向の制限
             movable[Direction.LEFT()] = !fieldMap[head.indexX - 1, head.indexY].let { it is Building || it is SnakeBody }

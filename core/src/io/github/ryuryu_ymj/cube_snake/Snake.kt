@@ -5,17 +5,19 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import kotlin.math.sqrt
 
 class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: Int, indexY: Int, bodyCnt: Int) : Actor() {
     val bodies = mutableListOf<SnakeBody>()
     val head
         get() = bodies[0]
+    val tale
+        get() = bodies.last()
     var isAlive = true
         private set
     val movable = Array(4) { true }
     private var canGrow = false
-    private var isProceeding = false
-    private var isFalling = false
+    private var fallHeight = 0
 
     init {
         stage.addActor(this)
@@ -32,21 +34,24 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
 
         if (movable.all { !it }) die() // 自死
 
-        if (isFalling && !isProceeding) {
+        // 落下
+        if (fallHeight > 0 && tale.actions.size == 0) {
             bodies.forEach {
-                it.moveBy(0, -1)
-                it.addAction(Actions.sequence(Actions.moveBy(0f, -PANEL_UNIT, 0.1f, Interpolation.pow2In)))
+                it.moveBy(0, -fallHeight)
+                it.addAction(Actions.moveBy(0f, -fallHeight * PANEL_UNIT, sqrt(fallHeight.toFloat()) * 0.05f, Interpolation.pow2In))
             }
         }
 
-        if (!isFalling && !isProceeding) {
-            // 入力による移動
+        if (tale.actions.size == 0) {
             inputDir.let {
                 if (it != null && movable[it()]) {
-                    val dir = bodies.last().direction
+                    val dir = tale.direction
+                    // 入力による移動
                     proceed(it)
+
+                    // アイテム取得後の初入力で成長
                     if (canGrow) {
-                        bodies.last().let {
+                        tale.let {
                             SnakeBody(asset, fieldMap, it.indexX, it.indexY, false, dir).let {
                                 fieldMap.addActor(stage, it)
                                 bodies.add(it)
@@ -57,7 +62,6 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
                 }
             }
         }
-        println(isProceeding)
     }
 
     private fun proceed(direction: Direction) {
@@ -68,19 +72,14 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
             dir1 = dir2
             val (dix, diy) = it.direction.getDIndex()
             it.moveBy(dix, diy)
-            if (i == bodies.size - 1) it.addAction(Actions.sequence(
-                    Actions.delay(0.05f * i),
-                    Actions.moveBy(dix * PANEL_UNIT, diy * PANEL_UNIT, 0.05f),
-                    Actions.run { isProceeding = false }))
-            else it.addAction(Actions.sequence(
+            it.addAction(Actions.sequence(
                     Actions.delay(0.05f * i),
                     Actions.moveBy(dix * PANEL_UNIT, diy * PANEL_UNIT, 0.05f)))
         }
-        isProceeding = true
     }
 
-    fun fall() {
-        isFalling = true
+    fun fall(fallHeight: Int) {
+        this.fallHeight = fallHeight
     }
 
     fun die() {

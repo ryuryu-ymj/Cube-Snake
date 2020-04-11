@@ -61,4 +61,6 @@ class FieldMap(val sizeX: Int = 0, val sizeY: Int = 0) {
             null
         }
     }
+
+    fun checkInBounds(indexX: Int, indexY: Int) = indexX in 0 until sizeX && indexY in 0 until sizeY
 }

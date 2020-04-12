@@ -27,6 +27,7 @@ class PlayScreen(private val asset: AssetManager) : Screen {
     private var fieldMap = FieldMap()
     private val blocks = mutableListOf<Block>()
     private val items = mutableListOf<Item>()
+    private val spines = mutableListOf<Spine>()
     private lateinit var snake: Snake
     private lateinit var goal: Goal
 
@@ -95,6 +96,9 @@ class PlayScreen(private val asset: AssetManager) : Screen {
             }
         }
 
+        if (spines.any { fieldMap[it.damageIndexXAndY.first, it.damageIndexXAndY.second] is SnakeBody })
+            snake.die()
+
         items.find { fieldMap[it.indexX, it.indexY] is SnakeBody }?.let {
             it.remove()
             items.remove(it)
@@ -136,25 +140,24 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                             blocks.add(it)
                             fieldMap.addActor(stage, it)
                         }
-                        "gl" -> goal = Goal(asset, fieldMap, ix, iy, Direction.LEFT).also {
-                            fieldMap.addActor(stage, it)
-                        }
-                        "gr" -> goal = Goal(asset, fieldMap, ix, iy, Direction.RIGHT).also {
-                            fieldMap.addActor(stage, it)
-                        }
-                        "gd" -> goal = Goal(asset, fieldMap, ix, iy, Direction.DOWN).also {
-                            fieldMap.addActor(stage, it)
-                        }
-                        "gu" -> goal = Goal(asset, fieldMap, ix, iy, Direction.UP).also {
-                            fieldMap.addActor(stage, it)
-                        }
                         "ic" -> Cherry(asset, fieldMap, ix, iy).let {
                             items.add(it)
                             fieldMap.addActor(stage, it)
                         }
                     }
-                    if (cell[0] == 'p') {
-                        snake = Snake(asset, stage, fieldMap, ix, iy, cell[1].toString().toInt())
+                    when (cell[0]) {
+                        'g' -> Direction.getDirFromInitial(cell[1])?.let {
+                            goal = Goal(asset, fieldMap, ix, iy, it).also {
+                                fieldMap.addActor(stage, it)
+                            }
+                        }
+                        's' -> Direction.getDirFromInitial(cell[1])?.let {
+                            Spine(asset, fieldMap, ix, iy, it).let {
+                                spines.add(it)
+                                fieldMap.addActor(stage, it)
+                            }
+                        }
+                        'p' -> snake = Snake(asset, stage, fieldMap, ix, iy, cell[1].toString().toInt())
                     }
                 }
             }

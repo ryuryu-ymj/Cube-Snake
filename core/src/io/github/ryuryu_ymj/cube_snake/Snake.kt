@@ -45,20 +45,20 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
         if (tale.actions.size == 0) {
             inputDir.let {
                 if (it != null && movable[it()]) {
-                    val dir = tale.direction
-                    // 入力による移動
-                    proceed(it)
-
                     // アイテム取得後の初入力で成長
                     if (canGrow) {
-                        tale.let {
-                            SnakeBody(asset, fieldMap, it.indexX, it.indexY, false, dir).let {
-                                fieldMap.addActor(stage, it)
-                                bodies.add(it)
-                            }
+                        SnakeBody(asset, fieldMap, head.indexX, head.indexY, false, head.direction).let {
+                            fieldMap.addActor(stage, it)
+                            bodies.add(1, it)
                         }
+                        val (dix, diy) = it.getDIndex()
+                        head.direction = it
+                        head.moveBy(dix, diy)
+                        head.addAction(Actions.moveBy(dix * PANEL_UNIT, diy * PANEL_UNIT, 0.4f, Interpolation.exp10In))
+                        head.toFront()
+                        tale.addAction(Actions.delay(0.7f))
                         canGrow = false
-                    }
+                    } else proceed(it) // 入力による移動
                 }
             }
         }

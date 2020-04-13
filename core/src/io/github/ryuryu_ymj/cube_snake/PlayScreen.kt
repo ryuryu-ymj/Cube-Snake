@@ -32,8 +32,6 @@ class PlayScreen(private val asset: AssetManager) : Screen {
     private lateinit var snake: Snake
     private lateinit var goal: Goal
 
-    private val notSnakeGroup = Group()
-
     init {
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0f)
         camera.update()
@@ -133,6 +131,7 @@ class PlayScreen(private val asset: AssetManager) : Screen {
 
     private fun readStage(stageNum: Int) {
         try {
+            val notSnakeGroup = Group()
             stage.addActor(notSnakeGroup)
 
             val file = Gdx.files.internal("stage${"%02d".format(stageNum)}.txt")

@@ -1,15 +1,15 @@
-b0                                            
+b0                                                  
 b0                                                b0
 b0                                                b0
 b0                                                b0
 b0                                                b0
 b0  icb0                                          b0
-b0              b0                                b0
-b0                                    b0b0b0b0    b0
-b0                      b0          b0b0b0b0b0  b0
-b0                                b0b0b0b0b0b0  b0
-b0                              b0b0b0b0b0b0b0  b0      
-b0                            b0b0b0b0b0b0b0b0  b0sr    
-b0            p6            b0b0b0b0b0b0b0b0b0          
-b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0  b0    b0b0b0b0b0b0b0gu
-b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0sub0susub0b0b0b0b0b0b0
+b0              b0                                b0        
+b0                                    b0b0b0b0    b0    b0  
+b0                      b0          b0b0b0b0b0  b0          
+b0                                b0b0b0b0b0b0  b0          
+b0                              b0b0b0b0b0b0b0  b0          
+b0                            b0b0b0b0b0b0b0b0  b0sr                
+b0            p6            b0b0b0b0b0b0b0b0b0          su          
+b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0  b0      b0b0b0b0b0b0gu
+b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0sub0sususub0b0b0b0b0b0

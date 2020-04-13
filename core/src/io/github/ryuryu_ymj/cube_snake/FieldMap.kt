@@ -1,5 +1,6 @@
 package io.github.ryuryu_ymj.cube_snake
 
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
 
 class FieldMap(val sizeX: Int = 0, val sizeY: Int = 0) {
@@ -25,13 +26,12 @@ class FieldMap(val sizeX: Int = 0, val sizeY: Int = 0) {
         }
     }
 
-    fun addActor(stage: Stage, actor: MyActor, indexX: Int = actor.indexX, indexY: Int = actor.indexY) {
+    fun addActor(actor: MyActor, indexX: Int = actor.indexX, indexY: Int = actor.indexY) {
         try {
             actor.let {
                 fieldMap[indexX][indexY] = it
                 it.indexX = indexX
                 it.indexY = indexY
-                stage.addActor(it)
             }
         } catch (err: ArrayIndexOutOfBoundsException) {
             println("actor:$actor, indexX:$indexX, indexY:$indexY がsizeX:$sizeX, sizeY:$sizeY の範囲を超えました")

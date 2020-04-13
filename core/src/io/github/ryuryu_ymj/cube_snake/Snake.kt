@@ -3,12 +3,14 @@ package io.github.ryuryu_ymj.cube_snake
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import kotlin.math.sqrt
 
 class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, indexX: Int, indexY: Int, bodyCnt: Int) : Actor() {
     val bodies = mutableListOf<SnakeBody>()
+    val bodyGroup = Group()
     val head
         get() = bodies[0]
     val tale
@@ -21,10 +23,11 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
 
     init {
         stage.addActor(this)
+        stage.addActor(bodyGroup)
         for (i in 0 until bodyCnt) {
             SnakeBody(asset, fieldMap, indexX - i, indexY, i == 0).let {
-                fieldMap.addActor(stage, it)
                 bodies.add(it)
+                bodyGroup.addActor(it)
             }
         }
     }
@@ -48,7 +51,8 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
                     // アイテム取得後の初入力で成長
                     if (canGrow) {
                         SnakeBody(asset, fieldMap, head.indexX, head.indexY, false, head.direction).let {
-                            fieldMap.addActor(stage, it)
+                            fieldMap.addActor(it)
+                            bodyGroup.addActor(it)
                             bodies.add(1, it)
                         }
                         val (dix, diy) = it.getDIndex()

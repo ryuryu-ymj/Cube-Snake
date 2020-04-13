@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.GdxRuntimeException
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -30,6 +31,8 @@ class PlayScreen(private val asset: AssetManager) : Screen {
     private val spines = mutableListOf<Spine>()
     private lateinit var snake: Snake
     private lateinit var goal: Goal
+
+    private val notSnakeGroup = Group()
 
     init {
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0f)
@@ -130,6 +133,8 @@ class PlayScreen(private val asset: AssetManager) : Screen {
 
     private fun readStage(stageNum: Int) {
         try {
+            stage.addActor(notSnakeGroup)
+
             val file = Gdx.files.internal("stage${"%02d".format(stageNum)}.txt")
             val lines = file.reader().readLines().asReversed()
             fieldMap = FieldMap(lines.map { it.length / 2 }.max() ?: 0, lines.size)
@@ -138,23 +143,27 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                     when (cell) {
                         "b0" -> Block(asset, fieldMap, ix, iy).let {
                             blocks.add(it)
-                            fieldMap.addActor(stage, it)
+                            fieldMap.addActor(it)
+                            notSnakeGroup.addActor(it)
                         }
                         "ic" -> Cherry(asset, fieldMap, ix, iy).let {
                             items.add(it)
-                            fieldMap.addActor(stage, it)
+                            fieldMap.addActor(it)
+                            notSnakeGroup.addActor(it)
                         }
                     }
                     when (cell[0]) {
                         'g' -> Direction.getDirFromInitial(cell[1])?.let {
                             goal = Goal(asset, fieldMap, ix, iy, it).also {
-                                fieldMap.addActor(stage, it)
+                                fieldMap.addActor(it)
+                                notSnakeGroup.addActor(it)
                             }
                         }
                         's' -> Direction.getDirFromInitial(cell[1])?.let {
                             Spine(asset, fieldMap, ix, iy, it).let {
                                 spines.add(it)
-                                fieldMap.addActor(stage, it)
+                                fieldMap.addActor(it)
+                                notSnakeGroup.addActor(it)
                             }
                         }
                         'p' -> snake = Snake(asset, stage, fieldMap, ix, iy, cell[1].toString().toInt())

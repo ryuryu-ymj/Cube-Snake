@@ -39,6 +39,7 @@ class Game : Game() {
         asset.load("snake_body.png", Texture::class.java)
         asset.load("snake_head.png", Texture::class.java)
         asset.load("cherry.png", Texture::class.java)
+        asset.load("spine.png", Texture::class.java)
 
         //フォントの読み込み
         val resolver: FileHandleResolver = InternalFileHandleResolver()

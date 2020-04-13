@@ -5,15 +5,15 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
-class Spine(asset: AssetManager, fieldMap: FieldMap, indexX: Int, indexY: Int, val direction: Direction)
+class Spine(asset: AssetManager, fieldMap: FieldMap, indexX: Int, indexY: Int, val dir: Direction)
     : Building(asset, fieldMap, indexX, indexY) {
-    private val region = TextureRegion(asset.get<Texture>("goal.png"))
+    private val region = TextureRegion(asset.get<Texture>("spine.png"))
     val damageIndexXAndY
-        get() = indexX + when (direction) {
+        get() = indexX + when (dir) {
             Direction.RIGHT -> 1
             Direction.LEFT -> -1
             else -> 0
-        } to indexY + when (direction) {
+        } to indexY + when (dir) {
             Direction.UP -> 1
             Direction.DOWN -> -1
             else -> 0
@@ -29,7 +29,7 @@ class Spine(asset: AssetManager, fieldMap: FieldMap, indexX: Int, indexY: Int, v
     override fun draw(batch: Batch, parentAlpha: Float) {
         batch.run {
             setColor(color.r, color.g, color.b, color.a * parentAlpha)
-            draw(region, x - width / 2, y - height / 2, width / 2, height / 2, width, height, 1f, 1f, direction.degree)
+            draw(region, x - width / 4, y - height / 2, width / 4, height / 2, width, height, 1f, 1f, dir.degree)
         }
     }
 }

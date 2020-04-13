@@ -2,13 +2,13 @@ b0                                          b0
 b0                                          b0
 b0                                          b0
 b0                b0                        b0
-b0          b0                              b0
+b0          b0    sd                        b0
 b0                                          b0
 b0                            b0      ic    b0
-b0                                          b0
-b0        b0  b0                        b0  b0
+b0            sr                            b0
+b0      slb0  b0                        b0  b0
 b0        b0  b0    ic                      b0
 b0    b0  b0  b0              ic            b0
 b0        b0  b0                        gu  b0
-b0                  p8                      b0
+b0                  p8    su                b0
 b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0

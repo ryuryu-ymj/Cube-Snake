@@ -38,14 +38,15 @@ class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, index
         if (movable.all { !it }) die() // 自死
 
         // 落下
-        if (fallHeight > 0 && tale.actions.size == 0) {
+        // TODO 落下中にトゲとの当たり判定ができていないため修正求む
+        if (fallHeight > 0 && !tale.hasActions()) {
             bodies.forEach {
                 it.moveBy(0, -fallHeight)
                 it.addAction(Actions.moveBy(0f, -fallHeight * PANEL_UNIT, sqrt(fallHeight.toFloat()) * 0.05f, Interpolation.pow2In))
             }
         }
 
-        if (tale.actions.size == 0) {
+        if (!tale.hasActions()) {
             inputDir.let {
                 if (it != null && movable[it()]) {
                     // アイテム取得後の初入力で成長

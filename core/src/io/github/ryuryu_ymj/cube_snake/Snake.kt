@@ -20,6 +20,7 @@ open class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, 
     val movable = Array(4) { true }
     protected var canGrow = false
     protected var fallHeight = 0
+    protected var isFalling = false
 
     init {
         stage.addActor(this)
@@ -38,12 +39,16 @@ open class Snake(val asset: AssetManager, stage: Stage, val fieldMap: FieldMap, 
         if (movable.all { !it }) die() // 自死
 
         // 落下
-        // TODO 落下中にトゲとの当たり判定ができていないため修正求む
         if (fallHeight > 0 && !tale.hasActions()) {
+            isFalling = true
             bodies.forEach {
-                it.moveBy(0, -fallHeight)
                 it.addAction(Actions.moveBy(0f, -fallHeight * PANEL_UNIT, sqrt(fallHeight.toFloat()) * 0.05f, Interpolation.pow2In))
             }
+        }
+        if (isFalling) {
+            if (fallHeight > 0) bodies.forEach {
+                it.moveBy(0, -1)
+            } else isFalling = false
         }
 
         if (!tale.hasActions()) {

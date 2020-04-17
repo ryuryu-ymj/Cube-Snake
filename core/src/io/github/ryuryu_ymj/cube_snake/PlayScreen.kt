@@ -165,7 +165,7 @@ class PlayScreen(private val asset: AssetManager) : Screen {
                                 notSnakeGroup.addActor(it)
                             }
                         }
-                        'p' -> snake = SnakeAutoProceed(asset, stage, fieldMap, ix, iy, cell[1].toString().toInt())
+                        'p' -> snake = Snake(asset, stage, fieldMap, ix, iy, cell[1].toString().toInt())
                     }
                 }
             }
